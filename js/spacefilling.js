@@ -22,23 +22,23 @@ function createSpaceFilling(data_csv) {
       return d["City"];
     })
     .key(function(d) {
+      return d["Neighborhooods"]
+    })
+    .key(function(d) {
       return d["Call Type Group"]
     })
     .key(function(d) {
       return d["Call Type"]
-    })
-    .key(function(d) {
-      return d["Call Final Disposition"]
     })
     .rollup(function(v) {
       return v.length;
     })
     .entries(data_csv);
 
-  console.log("nested_data", nested_data);
+  //console.log("nested_data", nested_data);
 
   root = nested_data[0].key;
-  console.log("root", root);
+  //console.log("root", root);
 
   let data = d3.hierarchy(nested_data[0], function(d) {
     //console.log("values", d.values);
@@ -78,18 +78,36 @@ function createSpaceFilling(data_csv) {
       .attr('cx', d => d.x)
       .attr('cy', d => d.y)
       .attr('id', d => d.data.key)
-      .text(function(d) {
-        return d.data.key;
-      })
       .attr('class', 'node')
       .style('fill', d => myColor(d.depth))
       .style('stroke', 'black')
+      .on("click", function(d) {
+        if (focus !== d) zoom(d), d3.event.stopPropagation();
+      });
 
     let empty = circles.filter(d => (d.data.key === ""))
       .style("stroke", "")
       .attr("fill-opacity", "0")
 
     setupEvents(g, circles, raise);
+  }
+
+  function zoom(d) {
+    //console.log(d);
+    if (d.height == 2) {
+      let circles = d3.selectAll('circle').remove();
+      d3.select("#tooltip").remove();
+      d3.selectAll("text.legend-text").remove();
+      createSpaceFillingDown(data_csv, d.data.key);
+    }
+
+    if (d.height == 1) {
+      let circles = d3.selectAll('circle').remove();
+      d3.select("#tooltip").remove();
+      d3.selectAll("text.legend-text").remove();
+      createSpaceFillingDown(data_csv, d.parent.data.key);
+    }
+
   }
 
   function setupEvents(g, selection, raise) {
@@ -157,6 +175,16 @@ function createSpaceFilling(data_csv) {
     selection.on('mouseout.tooltip', function(d) {
       g.select("#tooltip").remove();
     });
+
+    selection.on('click.tooltip', function(d) {
+      let selected = d3.select(this);
+      let arr = selected._groups;
+      let arr2 = arr[0];
+
+      console.log(arr2[0])
+      //showTooltip(g, d3.select(this));
+
+    });
   }
 
 
@@ -165,9 +193,15 @@ function createSpaceFilling(data_csv) {
   //add color circles
   svg.append("circle")
     .attr("cx", width - 200)
+    .attr("cy", height - 180)
+    .attr("r", 5)
+    .style("fill", "rgb(0, 68, 27)")
+    .style("stroke", "black")
+  svg.append("circle")
+    .attr("cx", width - 200)
     .attr("cy", height - 160)
     .attr("r", 5)
-    .style("fill", "rgb(64, 0, 75)")
+    .style("fill", "rgb(182, 225, 176)")
     .style("stroke", "black")
   svg.append("circle")
     .attr("cx", width - 200)
@@ -179,36 +213,12 @@ function createSpaceFilling(data_csv) {
     .attr("cx", width - 200)
     .attr("cy", height - 120)
     .attr("r", 5)
-    .style("fill", "rgb(182, 225, 176)")
-    .style("stroke", "black")
-  svg.append("circle")
-    .attr("cx", width - 200)
-    .attr("cy", height - 180)
-    .attr("r", 5)
-    .style("fill", "rgb(0, 68, 27)")
+    .style("fill", "rgb(64, 0, 75)")
     .style("stroke", "black")
 
+
+
   //add text
-  svg.append("text")
-    .attr("class", "legend-text")
-    .attr("x", width - 180)
-    .attr("y", height - 160)
-    .text("Call Final Disposition")
-    .attr("alignment-baseline", "middle")
-  svg
-    .append("text")
-    .attr("class", "legend-text")
-    .attr("x", width - 180)
-    .attr("y", height - 140)
-    .text("Call Type")
-    .attr("alignment-baseline", "middle")
-  svg
-    .append("text")
-    .attr("class", "legend-text")
-    .attr("x", width - 180)
-    .attr("y", height - 120)
-    .text("Call Type Group")
-    .attr("alignment-baseline", "middle")
   svg
     .append("text")
     .attr("class", "legend-text")
@@ -216,4 +226,25 @@ function createSpaceFilling(data_csv) {
     .attr("y", height - 180)
     .text("City")
     .attr("alignment-baseline", "middle")
+  svg.append("text")
+    .attr("class", "legend-text")
+    .attr("x", width - 180)
+    .attr("y", height - 160)
+    .text("Neighborhoood")
+    .attr("alignment-baseline", "middle")
+  svg
+    .append("text")
+    .attr("class", "legend-text")
+    .attr("x", width - 180)
+    .attr("y", height - 140)
+    .text("Call Type Group")
+    .attr("alignment-baseline", "middle")
+  svg
+    .append("text")
+    .attr("class", "legend-text")
+    .attr("x", width - 180)
+    .attr("y", height - 120)
+    .text("Call Type")
+    .attr("alignment-baseline", "middle")
+
 }

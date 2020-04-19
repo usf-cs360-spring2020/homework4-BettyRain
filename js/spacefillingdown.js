@@ -1,25 +1,25 @@
-function createNodeLink(data_csv) {
-
-  console.log(data_csv);
+function createSpaceFillingDown(data_csv, type) {
 
   let width = 960;
   let height = 500;
   let pad = 140;
   let diameter = 700;
+  let r = 20;
 
   // setup svg width and height
-  let svg = d3.select("body").select("svg#nodelink")
+  let svg = d3.select("body").select("svg#spacefilling")
+    //d3.select(DOM.svg(width, height))
     .style("width", width)
     .style("height", height);
 
   // shift (0, 0) a little bit to leave some padding
   let plot = svg.append("g")
     .attr("id", "plot")
-    .attr("transform", translate(pad + 300, pad + 100)); //translate(width / 2, (height / 2) ))
+    .attr("transform", translate(pad + 50, pad - 100));
 
-  let nested_data = d3.nest()
+  let old_nested_data = d3.nest()
     .key(function(d) {
-      return d["City"];
+      return d["Neighborhooods"];
     })
     .key(function(d) {
       return d["Call Type Group"]
@@ -27,21 +27,18 @@ function createNodeLink(data_csv) {
     .key(function(d) {
       return d["Call Type"]
     })
-    .key(function(d) {
-      return d["Call Final Disposition"]
-    })
     .rollup(function(v) {
       return v.length;
     })
     .entries(data_csv);
 
-  console.log("nested_data", nested_data);
+  let nested_data = old_nested_data.filter(function(d) {
+     return d.key == type;
+  });
 
   root = nested_data[0].key;
-  console.log("root", root);
 
   let data = d3.hierarchy(nested_data[0], function(d) {
-    //console.log("values", d.values);
     return d.values;
   });
 
@@ -52,73 +49,51 @@ function createNodeLink(data_csv) {
     return b.height - a.height || b.count - a.count;
   });
 
-  let layout = d3.cluster().size([2 * Math.PI, (diameter / 2) - pad]);
+  let layout = d3.pack()
+    .padding(r)
+    .size([diameter - 2 * pad, diameter - 2 * pad]);
 
   layout(data);
 
-  data.each(function(node) {
-    node.theta = node.x;
-    node.radial = node.y;
-
-    let point = toCartesian(node.radial, node.theta);
-    node.x = point.x;
-    node.y = point.y;
-  });
-
-
-  let generator = d3.linkRadial()
-    .angle(d => d.theta + Math.PI / 2) // rotate, 0 angle is mapped differently here
-    .radius(d => d.radial);
-
   myColor = d3.scaleSequential([data.height, 0], d3.interpolatePRGn)
 
-  drawLinks(plot.append("g"), data.links(), generator);
-  drawNodes(plot.append("g"), data.descendants(), true);
+  drawNodes(plot.append("g"), data.descendants(), false);
 
-
-  function toCartesian(r, theta) {
-    return {
-      x: r * Math.cos(theta),
-      y: r * Math.sin(theta)
-    };
-  }
 
   function translate(x, y) {
     return 'translate(' + String(x) + ',' + String(y) + ')';
   }
 
-  function drawLinks(g, links, generator) {
-    let paths = g.selectAll('path')
-      .data(links)
-      .enter()
-      .append('path')
-      .attr('d', generator)
-      .attr('class', 'link');
-  }
 
   function drawNodes(g, nodes, raise) {
-    //console.log(nodes);
 
     let circles = g.selectAll('circle')
       .data(nodes, node => node.data.key)
       .enter()
       .append('circle')
-      .attr('r', 5)
+      .attr('r', d => d.r ? d.r : r)
       .attr('cx', d => d.x)
       .attr('cy', d => d.y)
       .attr('id', d => d.data.key)
-      .text(function(d) {
-        return d.data.key;
-      })
       .attr('class', 'node')
       .style('fill', d => myColor(d.depth))
       .style('stroke', 'black')
+      .on("click", function(d) {
+        if (focus !== d) zoom(d), d3.event.stopPropagation();
+      });
 
-    //remove empty circles
-    let empty = circles.filter(d => (d.data.key === "")).remove()
-
+    let empty = circles.filter(d => (d.data.key === ""))
+      .style("stroke", "")
+      .attr("fill-opacity", "0")
 
     setupEvents(g, circles, raise);
+  }
+
+  function zoom(d) {
+    let circles = d3.selectAll('circle').remove();
+    d3.select("#tooltip").remove();
+    d3.selectAll("text.legend-text").remove();
+    createSpaceFilling(data_csv);
   }
 
   function setupEvents(g, selection, raise) {
@@ -177,49 +152,45 @@ function createNodeLink(data_csv) {
 
     // show tooltip text on mouseover (hover)
     selection.on('mouseover.tooltip', function(d) {
-      console.log(d);
       let selected = d3.select(this);
-      showTooltip(g, d3.select(this));
-
-      //create a filter for only last line of circles
-      if (d.height === 0 || d.height === 1) {
-        selection.filter(e => (d.data.key !== e.data.key))
-          .transition()
-          .duration(500)
-          .attr("fill-opacity", "0.2")
-          .style("stroke", "")
+      let arr = selected._groups;
+      let arr2 = arr[0];
+      if (arr2[0].id !== "") {
+        showTooltip(g, d3.select(this));
       }
     })
 
     // remove tooltip text on mouseout
     selection.on('mouseout.tooltip', function(d) {
-      selection
-        .transition()
-        .attr("fill-opacity", "1")
-        .style('stroke', 'black');
       g.select("#tooltip").remove();
     });
+
+    selection.on('click.tooltip', function(d) {
+      let selected = d3.select(this);
+      let arr = selected._groups;
+      let arr2 = arr[0];
+
+      console.log(arr2[0])
+      //showTooltip(g, d3.select(this));
+
+    });
   }
+
+
 
   ///add legend
   //add color circles
   svg.append("circle")
     .attr("cx", width - 200)
-    .attr("cy", height - 120)
+    .attr("cy", height - 140)
     .attr("r", 5)
     .style("fill", "rgb(64, 0, 75)")
     .style("stroke", "black")
   svg.append("circle")
     .attr("cx", width - 200)
-    .attr("cy", height - 140)
-    .attr("r", 5)
-    .style("fill", "rgb(206, 180, 215)")
-    .style("stroke", "black")
-  svg.append("circle")
-    .attr("cx", width - 200)
     .attr("cy", height - 160)
     .attr("r", 5)
-    .style("fill", "rgb(182, 225, 176)")
+    .style("fill", "rgb(206, 180, 215)")
     .style("stroke", "black")
   svg.append("circle")
     .attr("cx", width - 200)
@@ -232,8 +203,8 @@ function createNodeLink(data_csv) {
   svg.append("text")
     .attr("class", "legend-text")
     .attr("x", width - 180)
-    .attr("y", height - 120)
-    .text("Call Final Disposition")
+    .attr("y", height - 160)
+    .text("Call Type Group")
     .attr("alignment-baseline", "middle")
   svg
     .append("text")
@@ -246,14 +217,7 @@ function createNodeLink(data_csv) {
     .append("text")
     .attr("class", "legend-text")
     .attr("x", width - 180)
-    .attr("y", height - 160)
-    .text("Call Type Group")
-    .attr("alignment-baseline", "middle")
-  svg
-    .append("text")
-    .attr("class", "legend-text")
-    .attr("x", width - 180)
     .attr("y", height - 180)
-    .text("City")
+    .text("Neighborhoood")
     .attr("alignment-baseline", "middle")
 }
