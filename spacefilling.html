@@ -66,22 +66,27 @@
                 <div class="message-body" style="position: relative;">
                   <script type="text/javascript">
                     //createSpaceFilling();
+                    d3.csv("data/april_data.csv").then(createSpaceFilling);
                   </script>
+                  <svg id="spacefilling"></svg>
                 </div>
               </article>
             </div>
 
             <h3 id="interactivity">Interactivity</h3>
-            <p> Interactivity: Include how to interact with your visualization. For example, "hover over each bar to see detailed information about that airline." If you are unable to interact with your visualization, still include this section and state as much.
+            <p> Interactivity: Include how to interact with your visualization. For example, "hover over each bar to see detailed information about that airline." If you are unable to interact with your visualization, still include this section and
+              state as much.
             </p>
             <h3 id="encoding">Encoding</h3>
             <p> Encoding: Include how to interpret your visualization, indicating exactly how data is encoded. For example, "passenger count is encoded by the length of each bar, so longer bars represent higher passenger count."
             </p>
             <h3 id="wrangling">Wrangling</h3>
-            <p> Wrangling: Include any per-visualization data wrangling you performed on the original dataset, including filtering and processing, and how you wrangled the data (e.g. Tableau, Excel, using the website interface). Link to the wrangled data in your repository when possible.
+            <p> Wrangling: Include any per-visualization data wrangling you performed on the original dataset, including filtering and processing, and how you wrangled the data (e.g. Tableau, Excel, using the website interface). Link to the wrangled
+              data in your repository when possible.
             </p>
             <h3 id="conclusion">Conclusion</h3>
-            <p> Conclusion: Include one conclusion you can make about the data using your visualization. The conclusion should ideally be something that a simple statistic could not replicate. For example, "airline X has the highest passenger count over this time period" is a simple conclusion that will meet this requirement, but may not earn a plus-level letter grade.
+            <p> Conclusion: Include one conclusion you can make about the data using your visualization. The conclusion should ideally be something that a simple statistic could not replicate. For example, "airline X has the highest passenger count
+              over this time period" is a simple conclusion that will meet this requirement, but may not earn a plus-level letter grade.
             </p>
 
 
