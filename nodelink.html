@@ -82,10 +82,10 @@
             <p>Hover to see the tooltip with name and amount of cases. Hover to any circle of last 2 layers to filter by the type of case. </p>
             <img src="img/nodelink.gif" width="500" height="400" alt="example_nodelink">
             <h3 id="encoding">Encoding</h3>
-            <p> Each lap shows a pacticular column from data. The first lap (root) colored dark green shows the city (San Francicso in this case).</br>
-              The second lap colored light green shows call type groups of cases happened in that city.</br>
-              The third lap colored light purple shows call types of cases hiercical divided by groups happened in that city.</br>
-              The fourh and the last biggest lap colored dark purple shows call final disposition of cases hiercical divided by each case type happened in that city.</br>
+            <p> Each level shows a pacticular column from data. The first level (root) colored dark green shows the city (San Francicso in this case).</br>
+              The second level colored light green shows the  <b>call type group</b> of cases that happened in that city.</br>
+              The third level colored light purple shows the <b>call type </b>and how many of these cases happened per call type group in the city.</br>
+              The fourh and the last biggest lap colored dark purple shows call <b>final disposition</b> of hierarchical cases divided by each case type happened in that city.</br>
             </p>
             <h3 id="wrangling">Wrangling</h3>
             <p> Data was filtered to show only April 2020 cases and only San Francicso city. The column "Neighborhooods - Analysis Boundaries" was renamed to "Neighborhooods".
@@ -93,7 +93,7 @@
             </p>
             <h3 id="conclusion">Conclusion</h3>
             <p>
-              Using this chart we can see the April hierarchy how the call get assigned to a call type group, then to a call type and then the disposition of the call. </br>
+              Using this chart we can see the April hierarchy, how the call gets assigned to a call type group, then to a call type and then the disposition of the call. </br>
               For example, the calls that got assigned to "Water Rescue" were disposed as "Code 2 Transport" and "Electrical Hazard" calls were disposed as "Fire".</br>
               On the other hand, "Medical Incident" calls were disposed to 12 different categories.
             </p>
