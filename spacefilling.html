@@ -77,20 +77,26 @@
             </div>
 
             <h3 id="interactivity">Interactivity</h3>
-            <p> Interactivity: Include how to interact with your visualization. For example, "hover over each bar to see detailed information about that airline." If you are unable to interact with your visualization, still include this section and
-              state as much.
-            </p>
+            <p>Hover to see the tooltip with name and amount of cases. Click to any circle of last 2 layers to zoom into a clicked neighborhoood. </p>
+            <img src="img/spacefilling.gif" width="500" height="400" alt="example_spacefilling">
+
             <h3 id="encoding">Encoding</h3>
-            <p> Encoding: Include how to interpret your visualization, indicating exactly how data is encoded. For example, "passenger count is encoded by the length of each bar, so longer bars represent higher passenger count."
+            <p> Each lap shows a pacticular column from data. The first and the biggest lap (root) colored dark green shows the city (San Francicso in this case).</br>
+              The second smaller lap colored light green shows neighborhooods in that city.</br>
+              The third smaller lap colored light purple shows call type groups of cases happened in a particular neighborhoood.</br>
+              The fourh and the smallest lap colored dark purple shows call type of cases hiercical divided by each case type group happened in that neighborhoood. <br/>
+              After click the city lap dissapears and neighborhoood lap becomes colored in dark green.
             </p>
             <h3 id="wrangling">Wrangling</h3>
-            <p> Wrangling: Include any per-visualization data wrangling you performed on the original dataset, including filtering and processing, and how you wrangled the data (e.g. Tableau, Excel, using the website interface). Link to the wrangled
-              data in your repository when possible.
+            <p> Data was filtered to show only April 2020 cases and only San Francicso city. The column "Neighborhooods - Analysis Boundaries" was renamed to "Neighborhooods".
+              Data in csv format can be found <a href="https://github.com/usf-cs360-spring2020/homework4-BettyRain/tree/gh-pages/data">here</a>.
             </p>
             <h3 id="conclusion">Conclusion</h3>
-            <p> Conclusion: Include one conclusion you can make about the data using your visualization. The conclusion should ideally be something that a simple statistic could not replicate. For example, "airline X has the highest passenger count
-              over this time period" is a simple conclusion that will meet this requirement, but may not earn a plus-level letter grade.
-            </p>
+            <p> Using this chart we can see how April cases are divided for each neighborhoood. For example, we see two relatively big light green circles: </br> Tenderloin (2k cases) and South of Market (1.6k cases).
+              Clicking on each of them we can see the amount by each case type and case type group. </br>
+              On the other hand, there are few small circles. For example, circle "Treasure Island" has just two case groups: Potentially Life-threatening and </br>Non-Life threatening. </br>
+              Clicking on "Treasure Island" circle we can find out that this neighborhoood had 6 cases of Traffic Collisions as Non-Life threatening </br> and 19 Traffic Collisions as Potentially Life-threatening.
+            <p/>
 
 
           </div>

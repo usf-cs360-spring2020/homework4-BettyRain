@@ -185,7 +185,7 @@ function createNodeLink(data_csv) {
       if (d.height === 0 || d.height === 1) {
         selection.filter(e => (d.data.key !== e.data.key))
           .transition()
-          .duration(500)
+          .duration(400)
           .attr("fill-opacity", "0.2")
           .style("stroke", "")
       }
