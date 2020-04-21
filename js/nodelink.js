@@ -118,10 +118,10 @@ function createNodeLink(data_csv) {
     let empty = circles.filter(d => (d.data.key === "")).remove()
 
 
-    setupEvents(g, circles, raise);
+    setupEvents(g, circles);
   }
 
-  function setupEvents(g, selection, raise) {
+  function setupEvents(g, selection) {
 
     function showTooltip(g, node) {
       let gbox = g.node().getBBox(); // get bounding box of group BEFORE adding text
@@ -185,8 +185,8 @@ function createNodeLink(data_csv) {
       if (d.height === 0 || d.height === 1) {
         selection.filter(e => (d.data.key !== e.data.key))
           .transition()
-          .duration(400)
-          .attr("fill-opacity", "0.2")
+          .duration(500)
+          .attr("fill-opacity", "0.1")
           .style("stroke", "")
       }
     })
